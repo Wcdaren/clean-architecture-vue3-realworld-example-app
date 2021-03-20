@@ -17,6 +17,7 @@ export function useTags() {
       models.error = error
     } else {
       const { tags } = ret.value.getValue()
+
       shareModel.tags = tags.filter((tag: string) =>
         String(tag).replace(/[\u200B-\u200D\uFEFF]/g, '')
       )

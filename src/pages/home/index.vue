@@ -12,6 +12,7 @@
     <div class="container page">
       <div class="row">
         <div class="col-md-9">
+          <ArticlesListNavigation />
           <Suspense>
             <template #default>
               <ArticlesList use-global-feed use-my-feed use-tag-feed />
@@ -40,6 +41,7 @@
 </template>
 
 <script lang="ts">
+import ArticlesListNavigation from './components/ArticlesListNavigation.vue'
 import ArticlesList from './components/ArticlesList.vue'
 import PopularTags from './components/PopularTags.vue'
 import { defineComponent } from 'vue'
@@ -49,6 +51,7 @@ export default defineComponent({
   components: {
     ArticlesList,
     PopularTags,
+    ArticlesListNavigation,
   },
 })
 </script>

@@ -10,6 +10,14 @@ import {
   UpdateArticleRequest,
 } from '../dtos/articleDTO'
 
+export type getArticlesType = {
+  tag?: string
+  author?: string
+  favorited?: string
+  limit?: number
+  offset?: number
+  options?: any
+}
 export interface IArticlesService {
   createArticle(
     article: NewArticleRequest,
@@ -21,12 +29,7 @@ export interface IArticlesService {
     options?: any
   ): Promise<APIResponse<SingleArticleResponse>>
   getArticles(
-    tag?: string,
-    author?: string,
-    favorited?: string,
-    limit?: number,
-    offset?: number,
-    options?: any
+    params: getArticlesType
   ): Promise<APIResponse<MultipleArticlesResponse>>
   getArticlesFeed(
     limit?: number,
@@ -102,13 +105,9 @@ export class ArticlesService extends BaseAPI implements IArticlesService {
     }
   }
   async getArticles(
-    tag?: string,
-    author?: string,
-    favorited?: string,
-    limit?: number,
-    offset?: number,
-    options?: any
+    params: getArticlesType
   ): Promise<APIResponse<MultipleArticlesResponse>> {
+    const { author, favorited, limit, offset, tag, ...options } = params
     try {
       const response = await this.get('/articles', {
         tag,
@@ -116,7 +115,7 @@ export class ArticlesService extends BaseAPI implements IArticlesService {
         favorited,
         limit,
         offset,
-        options,
+        ...options,
       })
 
       return right(Result.ok<MultipleArticlesResponse>(response.data))

@@ -52,7 +52,8 @@
 </template>
 
 <script lang="ts">
-import { useFavoriteArticle } from 'src/composable/useFavoriteArticle'
+import { Article } from '@/modules/article/dtos/articleDTO'
+// import { useFavoriteArticle } from 'src/composable/useFavoriteArticle'
 import { computed, defineComponent, PropType } from 'vue'
 
 export default defineComponent({

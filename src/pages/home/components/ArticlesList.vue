@@ -1,10 +1,6 @@
 <template>
   <!-- <ArticlesListNavigation v-bind="$attrs" :tag="tag" :username="username" /> -->
-
-  <div v-if="articlesDownloading" class="article-preview">
-    Articles are downloading...
-  </div>
-  <div v-else-if="articles.length === 0" class="article-preview">
+  <div v-if="articles.length === 0" class="article-preview">
     No articles are here... yet.
   </div>
   <template v-else>
@@ -14,7 +10,9 @@
       :article="article"
       @update="newArticle => updateArticle(index, newArticle)"
     />
-
+    <div v-if="articlesDownloading" class="article-preview">
+      Articles are downloading...
+    </div>
     <AppPagination
       :count="articlesCount"
       :page="page"
@@ -25,28 +23,37 @@
 
 <script lang="ts">
 // import { useArticles } from '@/modules/blog/usecases/useAritcles.ts'
-import { useArticle } from '@/modules/article/useCases/useAritcles'
-import { defineComponent, onMounted } from 'vue'
-// import AppPagination from './AppPagination.vue'
+import { useArticle } from '@/modules/article/useCases/getAritcles'
+import { defineComponent, reactive, toRef, toRefs, watchEffect } from 'vue'
+import AppPagination from './AppPagination.vue'
 import ArticlesListArticlePreview from './ArticlesListArticlePreview.vue'
-// import ArticlesListNavigation from './ArticlesListNavigation.vue'
+import ArticlesListNavigation from './ArticlesListNavigation.vue'
 
 export default defineComponent({
   name: 'ArticlesList',
   components: {
     ArticlesListArticlePreview,
-    // AppPagination,
+    AppPagination,
     // ArticlesListNavigation,
   },
 
   async setup() {
+    const state = reactive({
+      page: 1,
+    })
     const {
-      models: { article, articles, articlesCount },
+      models: {
+        articles,
+        articlesCount,
+        error,
+        currentTag,
+        isLoading: articlesDownloading,
+      },
       dispatch,
     } = useArticle()
-    onMounted(() => {
-      dispatch.getArticles()
-    })
+    const changePage = (page: number) => {
+      state.page = page
+    }
     // const {
     //   fetchArticles,
     //   articlesDownloading,
@@ -58,13 +65,20 @@ export default defineComponent({
     //   tag,
     //   username,
     // } = useArticles()
-    // await fetchArticles()
+    // await dispatch.getArticles()
+    // watchEffect(() => {
+    //   dispatch.getArticles({
+    //     offset: state.page - 1,
+    //     tag: currentTag?.value,
+    //   })
+    // })
     return {
-      // articlesDownloading,
+      ...toRefs(state),
+      articlesDownloading,
       articles,
       articlesCount,
-      // page,
-      // changePage,
+      changePage,
+      currentTag,
       // updateArticle,
       // tag,
       // username,

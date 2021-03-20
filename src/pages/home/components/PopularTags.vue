@@ -2,21 +2,22 @@
   <p>Popular Tags</p>
 
   <div class="tag-list">
-    <AppLink
+    <a
+      href="#"
       v-for="tag in tags"
       :key="tag"
-      name="tag"
-      :params="{ tag }"
       class="tag-pill tag-default"
+      @click="getArticlesByTagName(tag)"
     >
       {{ tag }}
-    </AppLink>
+    </a>
   </div>
 </template>
 
 <script lang="ts">
+import { useArticle } from '@/modules/article/useCases/getAritcles'
 import { useTags } from '@/modules/tags/useCases/useTags'
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'PopularTags',
@@ -25,12 +26,14 @@ export default defineComponent({
       models: { tags },
       dispatch: { fetchTags },
     } = useTags()
-    onMounted(() => {
-      fetchTags()
-    })
+    const {
+      dispatch: { getArticlesByTagName },
+    } = useArticle()
 
+    await fetchTags()
     return {
       tags,
+      getArticlesByTagName,
     }
   },
 })
